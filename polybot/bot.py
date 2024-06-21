@@ -125,7 +125,25 @@ class ObjectDetectionBot(Bot):
             raise RuntimeError(f'Failed to get prediction from Yolo5 service: {response.text}')
 
         logger.info(f"TYPE of response.text: {type(response.text)}")
-        return format_prediction_result(response.text)
+
+        valid_json_str = response.text.replace("'", '"')
+
+        # Parse the JSON string into a dictionary
+        try:
+            prediction_result = json.loads(valid_json_str)
+        except json.JSONDecodeError:
+            return "Invalid prediction result format."
+
+        labels = prediction_result.get('labels', [])
+        logger.info(f"LABELS: {labels}")
+        detected_objects = [label['class'] for label in labels]
+        logger.info(f"DETECTED: {detected_objects}")
+
+        if detected_objects:
+            detected_string = ', '.join(detected_objects)
+            return f"Detected objects: {detected_string}"
+        else:
+            return "No objects detected."
 
     def handle_message(self, msg):
         logger.info(f'Incoming message: {msg}')
