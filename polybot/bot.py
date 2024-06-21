@@ -70,16 +70,16 @@ class Bot:
         self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
 
 
-# def format_prediction_result(prediction_result):
-#     labels = prediction_result.get('labels', [])
-#     detected_objects = [label['class'] for label in labels]
-#
-#     if detected_objects:
-#         detected_string = ', '.join(detected_objects)
-#         return f"Detected objects: {detected_string}"
-#     else:
-#
-#         return "No objects detected."
+def format_prediction_result1(prediction_result):
+    labels = prediction_result.get('labels', [])
+    detected_objects = [label['class'] for label in labels]
+
+    if detected_objects:
+        detected_string = ', '.join(detected_objects)
+        return f"Detected objects: {detected_string}"
+    else:
+
+        return "No objects detected."
 
 
 def format_prediction_result(prediction_result_str):
@@ -124,14 +124,17 @@ class ObjectDetectionBot(Bot):
 
         # Assuming the response is in a key-value format or another structure
         # Parsing the response manually
-        # prediction = {}
-        # lines = response.text.split('\n')
-        # for line in lines:
-        #     if ':' in line:
-        #         key, value = line.split(':', 1)
-        #         prediction[key.strip()] = value.strip()
+        prediction = {}
+        lines = response.text.split('\n')
+        for line in lines:
+            if ':' in line:
+                key, value = line.split(':', 1)
+                prediction[key.strip()] = value.strip()
         logger.info(f"TYPE of response.text: {type(response.text)}")
-        return response.text
+        logger.info(f"TYPE of prediction: {prediction}")
+
+        return format_prediction_result1(prediction)
+        # return response.text
         # return response
 
     def handle_message(self, msg):
@@ -146,16 +149,16 @@ class ObjectDetectionBot(Bot):
                 logger.info(f'Uploading: photo uploaded to s3')
 
                 prediction = self.get_yolo5_prediction(img_name)
-                logger.info(f'Prediction: {prediction}')
+                logger.info(f'Prediction: {prediction} type of it!!! {type(prediction)}')
 
                 # Format the prediction result if 'labels' in prediction: labels = prediction['labels'] result_text =
                 # "I detected the following objects:\n" + "\n".join( [ f"{label['class']} at ({label['cx']:.2f},
                 # {label['cy']:.2f}) with size ({label['width']:.2f}, {label['height']:.2f})" for label in labels ] )
                 # else: result_text = "Prediction result:\n" + "\n".join( [f"{key}: {value}" for key,
                 # value in prediction.items()] )
-                x = format_prediction_result(prediction)
-                logger.info(f"TYPE of x: {type(x)}")
-                self.send_text(msg['chat']['id'], x)
+                # x = format_prediction_result(prediction)
+                # logger.info(f"TYPE of x: {type(x)}")
+                self.send_text(msg['chat']['id'], prediction)
 
             except Exception as e:
                 logger.error(f'Error handling message: {e}')
