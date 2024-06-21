@@ -18,7 +18,7 @@ jobs:
       - name: Build and push image
         run: |
           cd polybot
-
+          docker logout
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
           IMAGE_NAME=polybot:${{ github.run_number }}
@@ -35,7 +35,7 @@ jobs:
       - name: Build and push image
         run: |
           cd yolo5
-   
+          
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
           IMAGE_NAME=yolo5:${{ github.run_number }}
