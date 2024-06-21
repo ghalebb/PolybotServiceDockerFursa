@@ -153,7 +153,7 @@ class ObjectDetectionBot(Bot):
                 # else: result_text = "Prediction result:\n" + "\n".join( [f"{key}: {value}" for key,
                 # value in prediction.items()] )
 
-                self.send_text(msg['chat']['id'], format_prediction_result(str(prediction)))
+                self.send_text(msg['chat']['id'], format_prediction_result(prediction))
 
             except Exception as e:
                 logger.error(f'Error handling message: {e}')
