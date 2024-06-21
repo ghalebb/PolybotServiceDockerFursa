@@ -78,7 +78,6 @@ def format_prediction_result1(prediction_result):
         detected_string = ', '.join(detected_objects)
         return f"Detected objects: {detected_string}"
     else:
-
         return "No objects detected."
 
 
@@ -94,13 +93,16 @@ def format_prediction_result(prediction_result_str):
         return "Invalid prediction result format."
 
     labels = prediction_result.get('labels', [])
+    logger.info(f"LABELS: {labels}")
     detected_objects = [label['class'] for label in labels]
+    logger.info(f"DETECTED: {detected_objects}")
 
     if detected_objects:
         detected_string = ', '.join(detected_objects)
         return f"Detected objects: {detected_string}"
     else:
         return "No objects detected."
+
 
 class ObjectDetectionBot(Bot):
     def __init__(self, token, telegram_chat_url, bucket_name, yolo5_service_url):
@@ -122,20 +124,8 @@ class ObjectDetectionBot(Bot):
         if response.status_code != 200:
             raise RuntimeError(f'Failed to get prediction from Yolo5 service: {response.text}')
 
-        # Assuming the response is in a key-value format or another structure
-        # Parsing the response manually
-        prediction = {}
-        lines = response.text.split('\n')
-        for line in lines:
-            if ':' in line:
-                key, value = line.split(':', 1)
-                prediction[key.strip()] = value.strip()
         logger.info(f"TYPE of response.text: {type(response.text)}")
-        logger.info(f"TYPE of prediction: {prediction}")
-
-        return format_prediction_result1(prediction)
-        # return response.text
-        # return response
+        return format_prediction_result(response.text)
 
     def handle_message(self, msg):
         logger.info(f'Incoming message: {msg}')
