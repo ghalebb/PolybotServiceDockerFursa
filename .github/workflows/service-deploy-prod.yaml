@@ -1,4 +1,4 @@
-name: Polybot Service Deployment Prod
+name: Polybot Service Deployment Dev
 
 on:
   push:
@@ -18,10 +18,11 @@ jobs:
       - name: Build and push image
         run: |
           cd polybot
-          
+          docker logout
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
           IMAGE_NAME=polybot:${{ github.run_number }}
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
 
@@ -34,10 +35,11 @@ jobs:
       - name: Build and push image
         run: |
           cd yolo5
-   
+          
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
           IMAGE_NAME=yolo5:${{ github.run_number }}
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
 
@@ -69,7 +71,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             # You deployment script here...
-                     
+            
             cd PolybotService/
             
             # Save telegram bot token in a secret file, to be used in docker-compose.yaml
