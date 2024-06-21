@@ -129,8 +129,9 @@ class ObjectDetectionBot(Bot):
         #     if ':' in line:
         #         key, value = line.split(':', 1)
         #         prediction[key.strip()] = value.strip()
-        #
+
         # return prediction
+        return response
 
     def handle_message(self, msg):
         logger.info(f'Incoming message: {msg}')
@@ -152,7 +153,7 @@ class ObjectDetectionBot(Bot):
                 # else: result_text = "Prediction result:\n" + "\n".join( [f"{key}: {value}" for key,
                 # value in prediction.items()] )
 
-                self.send_text(msg['chat']['id'], format_prediction_result(prediction))
+                self.send_text(msg['chat']['id'], prediction)
 
             except Exception as e:
                 logger.error(f'Error handling message: {e}')
