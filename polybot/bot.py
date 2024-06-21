@@ -1,4 +1,5 @@
 import json
+import re
 
 import telebot
 from loguru import logger
@@ -127,6 +128,7 @@ class ObjectDetectionBot(Bot):
         logger.info(f"TYPE of response.text: {type(response.text)}")
 
         valid_json_str = response.text.replace("'", '"')
+        valid_json_str = re.sub(r'ObjectId\("([0-9a-fA-F]+)"\)', r'"\1"', valid_json_str)
 
         # Parse the JSON string into a dictionary
         try:
