@@ -130,7 +130,7 @@ class ObjectDetectionBot(Bot):
         #         key, value = line.split(':', 1)
         #         prediction[key.strip()] = value.strip()
 
-        return response
+        return response.text
         # return response
 
     def handle_message(self, msg):
