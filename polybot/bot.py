@@ -71,40 +71,6 @@ class Bot:
         self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
 
 
-def format_prediction_result1(prediction_result):
-    labels = prediction_result.get('labels', [])
-    detected_objects = [label['class'] for label in labels]
-
-    if detected_objects:
-        detected_string = ', '.join(detected_objects)
-        return f"Detected objects: {detected_string}"
-    else:
-        return "No objects detected."
-
-
-def format_prediction_result(prediction_result_str):
-    # Replace single quotes with double quotes to make it valid JSON
-    valid_json_str = prediction_result_str.replace("'", '"')
-
-    # Parse the JSON string into a dictionary
-    try:
-        prediction_result = json.loads(valid_json_str)
-    except json.JSONDecodeError:
-        logger.info(f"TYPE prediction_result_str: {type(prediction_result_str)}")
-        return "Invalid prediction result format."
-
-    labels = prediction_result.get('labels', [])
-    logger.info(f"LABELS: {labels}")
-    detected_objects = [label['class'] for label in labels]
-    logger.info(f"DETECTED: {detected_objects}")
-
-    if detected_objects:
-        detected_string = ', '.join(detected_objects)
-        return f"Detected objects: {detected_string}"
-    else:
-        return "No objects detected."
-
-
 class ObjectDetectionBot(Bot):
     def __init__(self, token, telegram_chat_url, bucket_name, yolo5_service_url):
         super().__init__(token, telegram_chat_url)
@@ -137,9 +103,7 @@ class ObjectDetectionBot(Bot):
             return "Invalid prediction result format."
 
         labels = prediction_result.get('labels', [])
-        logger.info(f"LABELS: {labels}")
         detected_objects = [label['class'] for label in labels]
-        logger.info(f"DETECTED: {detected_objects}")
 
         if detected_objects:
             detected_string = ', '.join(detected_objects)
@@ -159,15 +123,6 @@ class ObjectDetectionBot(Bot):
                 logger.info(f'Uploading: photo uploaded to s3')
 
                 prediction = self.get_yolo5_prediction(img_name)
-                logger.info(f'Prediction: {prediction} type of it!!! {type(prediction)}')
-
-                # Format the prediction result if 'labels' in prediction: labels = prediction['labels'] result_text =
-                # "I detected the following objects:\n" + "\n".join( [ f"{label['class']} at ({label['cx']:.2f},
-                # {label['cy']:.2f}) with size ({label['width']:.2f}, {label['height']:.2f})" for label in labels ] )
-                # else: result_text = "Prediction result:\n" + "\n".join( [f"{key}: {value}" for key,
-                # value in prediction.items()] )
-                # x = format_prediction_result(prediction)
-                # logger.info(f"TYPE of x: {type(x)}")
                 self.send_text(msg['chat']['id'], prediction)
 
             except Exception as e:
