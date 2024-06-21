@@ -90,6 +90,7 @@ def format_prediction_result(prediction_result_str):
     try:
         prediction_result = json.loads(valid_json_str)
     except json.JSONDecodeError:
+        logger.info(f"TYPE prediction_result_str: {type(prediction_result_str)}")
         return "Invalid prediction result format."
 
     labels = prediction_result.get('labels', [])
@@ -129,7 +130,7 @@ class ObjectDetectionBot(Bot):
         #     if ':' in line:
         #         key, value = line.split(':', 1)
         #         prediction[key.strip()] = value.strip()
-
+        logger.info(f"TYPE of response.text: {type(response.text)}")
         return response.text
         # return response
 
@@ -152,8 +153,9 @@ class ObjectDetectionBot(Bot):
                 # {label['cy']:.2f}) with size ({label['width']:.2f}, {label['height']:.2f})" for label in labels ] )
                 # else: result_text = "Prediction result:\n" + "\n".join( [f"{key}: {value}" for key,
                 # value in prediction.items()] )
-
-                self.send_text(msg['chat']['id'], format_prediction_result(prediction))
+                x = format_prediction_result(prediction)
+                logger.info(f"TYPE of x: {type(x)}")
+                self.send_text(msg['chat']['id'], x)
 
             except Exception as e:
                 logger.error(f'Error handling message: {e}')
