@@ -24,7 +24,7 @@ jobs:
           IMAGE_NAME=polybot:${{ github.run_number }}
           docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
-          docker push $IMAGE_NAME
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
 
   Yolo5Build:
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
           IMAGE_NAME=yolo5:${{ github.run_number }}
           docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
-          docker push $IMAGE_NAME
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
 
   Deploy:
     name: Deploy Docker compose project
