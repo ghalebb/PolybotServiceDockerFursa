@@ -123,15 +123,15 @@ class ObjectDetectionBot(Bot):
 
         # Assuming the response is in a key-value format or another structure
         # Parsing the response manually
-        # prediction = {}
-        # lines = response.text.split('\n')
-        # for line in lines:
-        #     if ':' in line:
-        #         key, value = line.split(':', 1)
-        #         prediction[key.strip()] = value.strip()
+        prediction = {}
+        lines = response.text.split('\n')
+        for line in lines:
+            if ':' in line:
+                key, value = line.split(':', 1)
+                prediction[key.strip()] = value.strip()
 
-        # return prediction
-        return response
+        return prediction
+        # return response
 
     def handle_message(self, msg):
         logger.info(f'Incoming message: {msg}')
