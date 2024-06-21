@@ -104,7 +104,7 @@ def predict():
             logger.error(f'Error parsing prediction summary: {e}')
             return f'error: Failed to parse prediction summary: {str(e)}', 500
 
-        return str(prediction_summary)
+        return prediction_summary
 
     else:
         return f'prediction: {prediction_id}/{original_img_path}. prediction result not found', 404
