@@ -1,3 +1,5 @@
+import json
+
 import telebot
 from loguru import logger
 import os
@@ -68,7 +70,24 @@ class Bot:
         self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
 
 
-def format_prediction_result(prediction_result):
+# def format_prediction_result(prediction_result):
+#     labels = prediction_result.get('labels', [])
+#     detected_objects = [label['class'] for label in labels]
+#
+#     if detected_objects:
+#         detected_string = ', '.join(detected_objects)
+#         return f"Detected objects: {detected_string}"
+#     else:
+#
+#         return "No objects detected."
+
+def format_prediction_result(prediction_result_str):
+    try:
+        # Parse the JSON string into a dictionary
+        prediction_result = json.loads(prediction_result_str)
+    except json.JSONDecodeError:
+        return "Invalid prediction result format."
+
     labels = prediction_result.get('labels', [])
     detected_objects = [label['class'] for label in labels]
 
@@ -76,10 +95,7 @@ def format_prediction_result(prediction_result):
         detected_string = ', '.join(detected_objects)
         return f"Detected objects: {detected_string}"
     else:
-
         return "No objects detected."
-
-
 class ObjectDetectionBot(Bot):
     def __init__(self, token, telegram_chat_url, bucket_name, yolo5_service_url):
         super().__init__(token, telegram_chat_url)
